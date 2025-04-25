@@ -1,4 +1,4 @@
-public class Temp extends Thread{
+public class Temp implements Runnable{
     @Override
     public void run() {
         for(; ;){
