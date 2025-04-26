@@ -1,7 +1,7 @@
 /**
  * use the same class for both threads
  */
-public class MyThread extends Thread {
+public class ThreadLifeCycle extends Thread {
 
     @Override
     public void run(){
@@ -15,7 +15,7 @@ public class MyThread extends Thread {
 
     public static void main(String[] args) throws InterruptedException {
         //create obj of the current class
-        MyThread t1 = new MyThread();
+        ThreadLifeCycle t1 = new ThreadLifeCycle();
         System.out.println(t1.getState()); //NEW
         //lets start the thread
         t1.start();
