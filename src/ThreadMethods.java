@@ -1,4 +1,4 @@
-public class MyThread extends Thread{
+public class ThreadMethods extends Thread{
 
     @Override
     public void run(){
@@ -9,8 +9,8 @@ public class MyThread extends Thread{
     }
 
     public static void main(String[] args) {
-        MyThread t1 = new MyThread();
-        MyThread t2 = new MyThread();
+        ThreadMethods t1 = new ThreadMethods();
+        ThreadMethods t2 = new ThreadMethods();
         t1.setDaemon(true);
         t1.start();
 
