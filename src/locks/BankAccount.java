@@ -1,5 +1,6 @@
 package locks;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -34,6 +35,38 @@ public class BankAccount {
         }
         else {
             System.out.println(Thread.currentThread().getName() + "Insufficient balance");
+        }
+    }
+
+
+    /**
+     * 1. lock.tryLock() : if we use this it will only allow when the lock is free/avaialble, otherwise will return false directly
+     * doesn't wait
+     * 2. lock.tryLock(1000, TimeUnit.MILLISECONDS) : Will wait for the particular time, if within the time, the lock released,
+     * then it will go ahead with the method, otherwise will goto else part
+     */
+    public void withdraw(int amount){
+        System.out.println(Thread.currentThread().getName() + "Attempting to withdraw " + amount);
+        try {
+            if (lock.tryLock(1000, TimeUnit.MILLISECONDS)){
+                if(balance >= amount){
+                    System.out.println(Thread.currentThread().getName() + " Proceeding with the Withdrawal");
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+
+                    }
+                    balance -= amount;
+                    System.out.println(Thread.currentThread().getName() + " Completed withdrawal, Remaining balance is : " + balance);
+                }
+                else {
+                    System.out.println(Thread.currentThread().getName() + "Insufficient balance");
+                }
+            } else {
+                System.out.println(Thread.currentThread().getName() + "Could not acquire the lock, will try later");
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 }
