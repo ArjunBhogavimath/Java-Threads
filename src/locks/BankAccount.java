@@ -44,6 +44,13 @@ public class BankAccount {
      * doesn't wait
      * 2. lock.tryLock(1000, TimeUnit.MILLISECONDS) : Will wait for the particular time, if within the time, the lock released,
      * then it will go ahead with the method, otherwise will goto else part
+     *
+     * 3. lock.unlock() : will unlock the lock acquired and let next thread to take over
+     *
+     * 4. Thread.currentThread().interrupt(); : this is a good practice where we are restoring the thread state to interrupt
+     * so we can able to perform monitoring operations after we know its interrupted
+     *
+     * we should restore this in catch block, when the current operation failed
      */
     public void withdraw(int amount){
         System.out.println(Thread.currentThread().getName() + "Attempting to withdraw " + amount);
@@ -54,7 +61,11 @@ public class BankAccount {
                     try {
                         Thread.sleep(3000);
                     } catch (InterruptedException e) {
-
+                        Thread.currentThread().interrupt();
+                    }
+                    //need to free the lock which is acquired
+                    finally {
+                        lock.unlock();
                     }
                     balance -= amount;
                     System.out.println(Thread.currentThread().getName() + " Completed withdrawal, Remaining balance is : " + balance);
@@ -66,7 +77,10 @@ public class BankAccount {
                 System.out.println(Thread.currentThread().getName() + "Could not acquire the lock, will try later");
             }
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            Thread.currentThread().interrupt();
+        }
+        if(Thread.currentThread().isInterrupted()){
+            System.out.println(Thread.currentThread().getName() + " Thread is interrupted");
         }
     }
 }
